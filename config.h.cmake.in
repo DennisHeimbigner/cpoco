@@ -1,0 +1,147 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+/* Eliminate a number of warnings which come up based on deprecated
+   POSIX naming conventions. */
+#ifdef _MSC_VER
+
+#if _MSC_VER>=1900
+  #define STDC99
+#endif
+/* Define O_BINARY so that the appropriate flags
+are set when opening a binary file on Windows. */
+
+/* Disable a few warnings under Visual Studio, for the
+   time being. */
+  #include <io.h>
+  #pragma warning( disable: 4018 4996 4244 4305 )
+  #define unlink _unlink
+  #define open _open
+  #define close _close
+  #define read _read
+  #define lseek _lseeki64
+
+  #define fstat _fstat64
+
+  #define off_t __int64
+  #define _off_t __int64
+
+  #ifndef _OFF_T_DEFINED
+  #define _OFF_T_DEFINED
+  #endif
+
+#ifdef _WIN32
+  #ifndef strcasecmp
+    #define strcasecmp _stricmp
+  #endif
+
+  #ifndef snprintf
+    #if _MSC_VER<1900
+      #define snprintf _snprintf
+    #endif
+  #endif
+#endif
+
+
+  #define strdup _strdup
+  #define fdopen _fdopen
+  #define write _write
+  #define strtoll _strtoi64
+#endif
+
+#define PACKAGE_VERSION "${VERSION}"
+#cmakedefine VERSION "${VERSION}"
+
+/* Various other options. */
+#cmakedefine USE_MUTEX 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H @HAVE_UNISTD_H@
+#cmakedefine YY_NO_UNISTD_H @YY_NO_UNISTD_H@
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#cmakedefine HAVE_DLFCN_H @HAVE_DLFCN_H@
+
+/* Define to 1 if you have the <errno.h> header file. */
+#cmakedefine HAVE_ERRNO_H @HAVE_ERRNO_H@
+
+/* Define to 1 if you have the <locale.h> header file. */
+#cmakedefine HAVE_LOCAL_H @HAVE_LOCAL_H@
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#cmakedefine HAVE_STDIO_H @HAVE_STDIO_H@
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#cmakedefine HAVE_STDLIB_H @HAVE_STDLIB_H@
+
+/* Define to 1 if you have the <strings.h> header file. */
+#cmakedefine HAVE_STRINGS_H @HAVE_STRINGS_H@
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine HAVE_MALLOC_H @HAVE_MALLOC_H@
+
+/* Define whether char is signed by default. */
+#ifndef __CHAR_UNSIGNED__
+#cmakedefine __CHAR_UNSIGNED__
+#endif
+
+/* The size of `void*` as computed by sizeof. */
+#cmakedefine SIZEOF_VOIDSTAR @SIZEOF_VOIDSTAR@
+/* The size of `char` as computed by sizeof. */
+#cmakedefine SIZEOF_CHAR @SIZEOF_CHAR@
+/* The size of `double` as computed by sizeof. */
+#cmakedefine SIZEOF_DOUBLE @SIZEOF_DOUBLE@
+/* The size of `float` as computed by sizeof. */
+#cmakedefine SIZEOF_FLOAT @SIZEOF_FLOAT@
+/* The size of `int` as computed by sizeof. */
+#cmakedefine SIZEOF_INT @SIZEOF_INT@
+/* The size of `long` as computed by sizeof. */
+#cmakedefine SIZEOF_LONG @SIZEOF_LONG@
+/* The size of `long long` as computed by sizeof. */
+#cmakedefine SIZEOF_LONG_LONG @SIZEOF_LONG_LONG@
+/* The size of `off_t` as computed by sizeof. */
+#cmakedefine SIZEOF_OFF_T @SIZEOF_OFF_T@
+/* The size of `short` as computed by sizeof. */
+#cmakedefine SIZEOF_OFF64_T @SIZEOF_OFF64_T@
+#cmakedefine SIZEOF_SHORT @SIZEOF_SHORT@
+/* The size of `size_t` as computed by sizeof. */
+#cmakedefine SIZEOF_SIZE_T @SIZEOF_SIZE_T@
+/* The size of `ssize_t` as computed by sizeof. */
+#cmakedefine SIZEOF_SSIZE_T @SIZEOF_SSIZE_T@
+/* The size of `uchar` as computed by sizeof. */
+#cmakedefine SIZEOF_UCHAR @SIZEOF_UCHAR@
+/* The size of `__int64` found on Windows systems. */
+#cmakedefine SIZEOF___INT64 @SIZEOF___INT64@
+
+/* Set if we have strdup */
+#cmakedefine HAVE_STRDUP
+#cmakedefine HAVE_STRNDUP
+#cmakedefine HAVE_STRLCAT
+#cmakedefine HAVE_STRERROR
+#cmakedefine HAVE_SNPRINTF
+#cmakedefine HAVE_STRCHR
+#cmakedefine HAVE_STRRCHR
+#cmakedefine HAVE_STRCAT
+#cmakedefine HAVE_STRCPY
+#cmakedefine HAVE_STRDUP
+#cmakedefine HAVE_STRCASECMP
+#cmakedefine HAVE_STRTOD
+#cmakedefine HAVE_STRTOLL
+#cmakedefine HAVE_STROULL
+#cmakedefine HAVE_STRSTR
+
+/* Define to 1 if the system has the type `uchar'.*/
+#cmakedefine HAVE_UCHAR
+
+/* Misc defines copied from autotools config.h.in */
+#cmakedefine DLL_EXPORT
+#cmakedefine DLL_NETCDF
+
+#endif
+
