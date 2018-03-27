@@ -35,5 +35,4 @@ libcpt_la_SOURCES = cptestlib.c
 libcpt_la_LDFLAGS = -module -avoid-version -shared -export-dynamic -no-undefined -rpath ${abs_builddir}
 
 AM_LDFLAGS += libcpoco.la
-check_PROGRAMS = cp_test
 TESTS = cp_test

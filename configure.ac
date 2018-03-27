@@ -34,6 +34,10 @@ AC_CHECK_FUNCS([strdup])
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
 
+# These are crucial for linux
+AC_CHECK_HEADERS([dlfcn.h])
+AC_CHECK_LIB(dl, dlopen)
+
 # Apparently AX_PTHREAD is not available
 AC_CHECK_LIB(pthread, pthread_create)
 if test "x$ac_cv_lib_pthread_pthread_create" != x ; then

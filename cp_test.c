@@ -18,6 +18,7 @@ and Contributors.
 static const char* SHAREDLIBS[] = {
 	"./libcpt.so",
 	"./cygcpt.dll",
+	"./.libs/libcpt.so",
 	"./.libs/cygcpt.dll",
 	"./.libs/cygcpt-0.dll",
 	NULL};
