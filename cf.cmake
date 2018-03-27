@@ -1,23 +1,44 @@
-# Is visual studio being used?
-#VS=yes
-CYGWIN=yes
+# Visual Studio
 
-if test "x$VS" = x ; then
-CC=gcc
+case "$1" in
+vs|VS) VS=1 ;;
+linux|nix|l|x) unset VS ;;
+*) echo "Must specify env: vs|linux"; exit 1; ;;
+esac
+
+if test "x$VS" = x1 ; then
+  if test "x$2" = xsetup ; then
+    VSSETUP=1
+  else
+    unset VSSETUP
+  fi
 fi
 
-export CC
+if test "x$VSSETUP" = x1 ; then
+CFG="Debug"
+else
+CFG="Release"
+fi
 
-#FLAGS="$FLAGS -DCMAKE_INSTALL_PREFIX=/usr/local"
-#FLAGS="-DCMAKE_PREFIX_PATH=/usr/local"
+FLAGS="$FLAGS -DCMAKE_INSTALL_PREFIX=/tmp/cpoco"
+
+#FLAGS="$FLAGS -DENABLE_PTHREAD=false"
 #FLAGS="$FLAGS -DENABLE_MUTEX=false"
 
 rm -fr build
 mkdir build
 cd build
 
-cmake $FLAGS ..
-cmake --build .
-cmake --build . --target test
-#cmake --build . --target install
-#CTEST_OUTPUT_ON_FAILURE=1 cmake --build . --target test
+if test "x$VS" != x ; then
+# Visual Studio
+CFG="Release"
+cmake -DCMAKE_BUILD_TYPE=${CFG} $FLAGS ..
+cmake --build . --config ${CFG}
+cmake --build . --config ${CFG} --target test
+else
+# GCC
+cmake "${G}" $FLAGS ..
+make all
+make test
+fi
+exit

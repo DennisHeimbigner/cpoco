@@ -3,14 +3,24 @@ Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
 and Contributors.
 */
 
+#include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
 #include "cpoco.h"
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
-static const char* SHAREDLIBS[] = {"cygcpt.dll", ".libs/cygcpt-0.dll", NULL};
+/* Possible names of the test shared library */
+static const char* SHAREDLIBS[] = {
+	"./libcpt.so",
+	"./cygcpt.dll",
+	"./.libs/cygcpt.dll",
+	"./.libs/cygcpt-0.dll",
+	NULL};
 
 typedef int (*GimmeFiveFunc)();
 
@@ -142,16 +152,11 @@ test3(const char* path)
 static char*
 abspath(const char* relpath)
 {
-    static char path[4096];
-    /* Get CWD */
-#ifdef HAVE_UNISTD_H
-    getcwd(path,sizeof(path));
+#ifdef _MSC_VER
+    return _fullpath(NULL,relpath,8192);
 #else
-    strcpy(path,getenv("PWD"));
+    return realpath(relpath, NULL);
 #endif
-    strcat(path,"/");
-    strcat(path,relpath);
-    return path;
 }
 
 static const char*
@@ -162,6 +167,7 @@ findlib(void)
     for(p=SHAREDLIBS;*p;p++) {
 	FILE* f;
 	path = abspath(*p);
+	if(path == NULL) continue;
 	f = fopen(path,"r");
 	if(f != NULL) {
 	    fclose(f);

@@ -29,13 +29,11 @@ EXTRA_DIST = cmake_uninstall.cmake.in CMakeInstallation.cmake CMakeLists.txt REA
 
 check_LTLIBRARIES = libcpt.la
 libcpt_la_SOURCES = cptestlib.c
-libcpt_la_LDFLAGS = -no-undefined
+
 # Normally check libraries are created only as archives,
 # but we need a shared lib. This appears to do the trick
-#(note /tmp is an arbitrary absolute path).
-libcpt_la_LDFLAGS += = -module -avoid-version -shared -export-dynamic -no-undefined -rpath ${abs_topbuilddir}
+libcpt_la_LDFLAGS = -module -avoid-version -shared -export-dynamic -no-undefined -rpath ${abs_builddir}
 
-LDADD = libcpoco.la
+AM_LDFLAGS += libcpoco.la
 check_PROGRAMS = cp_test
 TESTS = cp_test
-
