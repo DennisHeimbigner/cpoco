@@ -1,16 +1,16 @@
 # The cpoco Multi-Platform Dynamic-Loading Library 
-__Author__: Dennis Heimbigner  
-__Organization__: University Corporation for Atmospheric Research  
-__Initial Release__: 2015-9-28
-
-__Copyright__: Copyright 2018, UCAR/Unidata; see COPYRIGHT file for copying and redistribution conditions. This code is Derived from the poco library (See [Poco Information](#poco-information) below).
 
 ## Description
-The primary goal of the cpoco project is to provide a C language version of the poco multi-platform dynamic loading library. The poco libraries are written in C++.
 
-The secondary goal of cpoco is to support dynamic loading of HDF5 filters by the [netCDF C library](http://www.unidata.ucar.edu/netcdf/).
+The primary goal of the cpoco project is to provide a C language
+version of the poco multi-platform dynamic loading library. The
+poco libraries are written in C++.
+
+The secondary goal of cpoco is to support dynamic loading of
+HDF5 filters by the [netCDF C library](http://www.unidata.ucar.edu/netcdf/).
 
 # Mutual Exclusion Support
+
 Internally, cpoco (like poco) supports serialized access to the dynamic
 loading functions using mutual exclusion locks. For *nix* systems, this usually requires pthreads support.
 
@@ -18,6 +18,7 @@ In any case, it is possible to disable the use of mutual exclusion if you know
 you are operating in a single threaded environment: see the [installation](#installation) section below.
 
 # Implementataion Restrictions
+
 Currently support is provided for the following systems.
 
 * libdl supporting operating systems: e.g. linux, os-x, cygwin.
@@ -26,6 +27,7 @@ Currently support is provided for the following systems.
 # Installation
 
 ## Automake
+
 Automake-based configuration is provided using ./configure is provided for systems supporting autoconf/automake.
 
 Use this command to see the available options.
@@ -39,6 +41,9 @@ The most important options are these.
 * --enable-shared  -- build a shared library (default is enabled)
 * --enable-static -- build a static library (default is enabled)
 * --prefix=<installation directory> -- defaults to /usr/local
+
+Note that is --enable-shared is disabled, then the test program
+will not run because the test shared library (libcpt) cannot be built.
 
 Use these commands to build, test, and install using autoconf.
 ```bash
@@ -76,14 +81,25 @@ The <flags> are these:
 * -DENABLE_PTHREAD -- use pthreads (if available) (default is true)
 * -DCMAKE_INSTALL_PREFIX=<path> -- installation directory (defaults to /usr/local or c:/Program Files)
 
+# Support
+
+__Author__: Dennis Heimbigner  
+__Organization__: University Corporation for Atmospheric Research  
+__Initial Release__: 2015-9-28
+__Last Modified__: 2018-03-27
+
+__Copyright__: Copyright 2018, UCAR/Unidata; see COPYRIGHT file for copying and redistribution conditions. This code is Derived from the poco library (See [Poco Information](#poco-information) below).
+
 # Change Log
 
 1. (2016-09-28) Initial release.
+2. (2018-03-27) Updated to make fix some automake problems.
 
 # Poco Information
 
 * Base poco version: 1.7.5 (2016-08-29)
 * Poco web page: http://pocoproject.org
+
 
 ## Poco License
 
