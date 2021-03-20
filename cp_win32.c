@@ -9,11 +9,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#define DLL_EXPORT
+
 #include "cpoco.h"
 
 #ifdef USE_MUTEX
 static CRITICAL_SECTION mutex;
 #endif
+
+static const char* driveletters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+/* Forward */
+static int isAbsolutePath(const char* path);
+
+/**************************************************
 
 int
 cp_win32_initialize()
@@ -70,23 +80,23 @@ load(SharedLib* lib , const char* path0, int flags)
 {
     cperr ret = CP_OK;
     DWORD realflags = 0;
-    Path path = path0;
+    const char* path = path0;
 
-    lock(mutex);
-    if(lib->handle != NULL)
+    lock();
+    if(lib->state.handle != NULL)
 	return CP_ELOADED;
     lib->path = nulldup(path);
     lib->flags = flags;
-    if(path.isAbsolute()) realflags |= LOAD_WITH_ALTERED_SEARCH_PATH;
+    if(isAbsolutePath(path)) realflags |= LOAD_WITH_ALTERED_SEARCH_PATH;
     lib->state.flags = realflags;    
     lib->state.handle = LoadLibraryExA(path, 0, realflags);
-    if(_handle == NULL) {
+    if(lib->state.handle == NULL) {
 	ret = CP_ELOAD;
 	goto done;
     }
 
 done:
-    unlock(mutex);
+    unlock();
     return ret;
 }
 
@@ -94,13 +104,14 @@ static cperr
 unload(SharedLib* lib)
 {
     cperr ret = CP_OK;
-    lock(mutex);
+    lock();
     if(lib->state.handle != NULL) {
 	FreeLibrary((HMODULE)lib->state.handle);
 	lib->state.handle = NULL;
+	goto done;
     }
 done:
-    unlock(mutex);
+    unlock();
     return ret;
 }
 
@@ -114,11 +125,11 @@ static void*
 getsymbol(SharedLib* lib, const char* name)
 {
     void* result = NULL;
-    lock(mutex);
+    lock();
     if(lib->state.handle != NULL) {
-	result = (void*)getProcAddress((HMODULE)lib->state.handle,name);
+	result = (void*)GetProcAddress((HMODULE)lib->state.handle,name);
     }
-    unlock(mutex);
+    unlock();
     return result;
 }
 
@@ -128,7 +139,21 @@ getpath(SharedLib* lib)
     return lib->path;
 }
 
-struct API cp_host_api = {
+static int
+isAbsolutePath(const char* path)
+{
+    if(path == NULL || path[0] == '\0')
+	return 0;
+    if(strchr(driveletters,path[0]) != NULL
+       && path[1] == ':'
+       && (path[2] == '/' || path[2] == '\\'))
+        return 1;
+    if(path[0] == '/' || path[2] == '\\')
+	return 1;
+    return 0;
+}
+
+EXTERNL struct API cp_host_api = {
 	init,
 	reclaim,
 	load,

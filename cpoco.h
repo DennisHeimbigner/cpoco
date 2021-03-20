@@ -52,38 +52,53 @@ struct SharedLib {
 
 
 /**************************************************/
+#ifdef _MSC_VER
+#  ifdef DLL_EXPORT /* define when building the library */
+#   define EXTERNL __declspec(dllexport) extern
+#  else
+#   define EXTERNL __declspec(dllimport) extern
+#  endif
+#else
+#  ifdef DLL_EXPORT
+#    define EXTERNL
+#  else
+#    define EXTERNL extern
+#  endif
+#endif
 
-extern struct API cp_host_api;
+/**************************************************/
+
+EXTERNL struct API cp_host_api;
 
 /**************************************************/
 /* SharedLib API */
 
-extern cperr cpsharedlibnew(SharedLib**); /* Creates a SharedLib object. */
+EXTERNL cperr cpsharedlibnew(SharedLib**); /* Creates a SharedLib object. */
 
-extern cperr cpsharedlibfree(SharedLib*); /* free this shared library */
+EXTERNL cperr cpsharedlibfree(SharedLib*); /* free this shared library */
 
 /*
 Loads a shared library from the given path using specified flags.
 Returns error if a library has already been loaded or cannot be loaded.
 */
-extern cperr cpload(SharedLib*,const char* path, int flags);
+EXTERNL cperr cpload(SharedLib*,const char* path, int flags);
 
-extern cperr cpunload(SharedLib*); /* Unloads a shared library. */
+EXTERNL cperr cpunload(SharedLib*); /* Unloads a shared library. */
 
-extern int cpisloaded(SharedLib*); /* Returns 1 iff a library has been loaded.*/
+EXTERNL int cpisloaded(SharedLib*); /* Returns 1 iff a library has been loaded.*/
 
 /* Returns the address of the symbol with the given name.
    For functions, this is the entry point of the function.
    Return NULL if the symbol does not exist
 */
-extern void* cpgetsymbol(SharedLib*,const char* name);
+EXTERNL void* cpgetsymbol(SharedLib*,const char* name);
 
 /* Returns the path of the library, as specified in
    a call to load(SharedLib*)
 */
-extern const char* cpgetpath(SharedLib*);
+EXTERNL const char* cpgetpath(SharedLib*);
 
-extern const char* cperrstr(int errno);
+EXTERNL const char* cperrstr(int err1);
 
 #define nulldup(s) (s == NULL ? NULL : strdup(s))
 

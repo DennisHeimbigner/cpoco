@@ -8,7 +8,7 @@
 # Set Project Properties
 #############
 
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.6.1)
 
 #######
 # Project Name: cpoco
@@ -199,6 +199,11 @@ ENDIF(${CMAKE_SYSTEM_NAME} EQUAL "Darwin")
 # Include checks (probably overkill)
 
 CHECK_INCLUDE_FILE("unistd.h"  HAVE_UNISTD_H)
+# Solve a compatibility issue in ncgen/, which checks
+# for NO_UNISTD_H
+IF(NOT HAVE_UNISTD_H)
+  SET(YY_NO_UNISTD_H TRUE)
+ENDIF()
 CHECK_INCLUDE_FILE("malloc.h"    HAVE_MALLOC_H)
 CHECK_INCLUDE_FILE("dlfcn.h"   HAVE_DLFCN_H)
 CHECK_INCLUDE_FILE("errno.h"   HAVE_ERRNO_H)
@@ -255,7 +260,7 @@ SET(cpoco_SOURCES ${cpoco_SOURCES} cp_unix.c)
 ENDIF()
 MESSAGE(STATUS "SOURCES=${cpoco_SOURCES}")
 
-ADD_LIBRARY(libcpoco STATIC ${cpoco_SOURCES})
+#ADD_LIBRARY(cpoco STATIC ${cpoco_SOURCES})
 ADD_LIBRARY(cpoco SHARED ${cpoco_SOURCES})
 
 INSTALL(FILES cpoco.h
@@ -309,10 +314,10 @@ INCLUDE_DIRECTORIES(${cpoco_BINARY_DIR})
 ################################
 # Testing
 ################################
-SET(TESTDLL cygcpt.dll)
+SET(TESTDLL cpt.dll)
 
 ENABLE_TESTING()
-ADD_TEST(NAME cp_test COMMAND cp_test ${TESTDLL})
+ADD_TEST(NAME cp_test COMMAND cp_test ${PREFIXPATH} ${TESTDLL})
 ADD_EXECUTABLE(cp_test cp_test.c)
 TARGET_LINK_LIBRARIES(cp_test cpoco) 
 

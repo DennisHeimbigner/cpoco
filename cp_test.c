@@ -9,17 +9,20 @@ and Contributors.
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-#include "cpoco.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include "cpoco.h"
 
 /* Possible names of the test shared library */
 static const char* SHAREDLIBS[] = {
 	"./libcpt.so",
 	"./cygcpt.dll",
+	"./cpt.dll",
 	"./.libs/libcpt.so",
 	"./.libs/cygcpt.dll",
+	"./.libs/cpt.dll",
 	"./.libs/cygcpt-0.dll",
 	NULL};
 
@@ -151,30 +154,46 @@ test3(const char* path)
 }
 
 static char*
-abspath(const char* relpath)
+abspath(const char* prefixpath, const char* relpath)
 {
+    char* full = NULL;
+    if(prefixpath == NULL) {
 #ifdef _MSC_VER
-    return _fullpath(NULL,relpath,8192);
+        full =  _fullpath(NULL,relpath,8192);
 #else
-    return realpath(relpath, NULL);
+        full = realpath(relpath, NULL);
 #endif
+    } else { /* concatenate */
+	full = malloc(strlen(prefixpath)+strlen(relpath)+2);
+	strcpy(full,prefixpath);
+#ifdef _MSC_VER
+	strcat(full,"\\");
+#else
+	strcat(full,"/");
+#endif
+	strcat(full,relpath);
+    }
+    fprintf(stderr,"abspath=%s\n",full);
+    return full;
 }
 
 static const char*
-findlib(void)
+findlib(const char* prefixpath)
 {
     char* path;
     const char** p;
     for(p=SHAREDLIBS;*p;p++) {
 	FILE* f;
-	path = abspath(*p);
+	path = abspath(prefixpath,*p);
 	if(path == NULL) continue;
 	f = fopen(path,"r");
+fprintf(stderr,"findlib: trying %s\n",path);
 	if(f != NULL) {
 	    fclose(f);
 	    return *p;
 	}
     }
+fprintf(stderr,"findlib: failed\n");
     return NULL;
 }
 
@@ -182,20 +201,37 @@ findlib(void)
 int
 main(int argc, char** argv)
 {
+    const char* prefixpath = NULL;
     const  char* relpath = NULL;
     const char* path = NULL;
 
-    if(argc > 1) {
-	relpath = argv[1];
-    } else {
-        relpath = findlib();
+    switch (argc) {
+    default:
+    case 3:
+	relpath = argv[2];
+	/* fall thru */
+    case 2:
+	prefixpath = argv[1];
+	break;
+    case 1:
+    case 0:
+	break;	
     }
+
+    if(prefixpath == NULL) {
+	fprintf(stderr,"No prefix path specified\n");
+	return 1;
+    }
+
+    if(relpath == NULL)
+        relpath = findlib(prefixpath);
+
     if(relpath == NULL) {
 	fprintf(stderr,"No dynamic test library specified\n");
 	return 1;
     }
 
-    path = abspath(relpath);
+    path = abspath(prefixpath,relpath);
 
     if(path == NULL) {
 	fprintf(stderr,"Cannot locate dynamic test library: %s\n",relpath);

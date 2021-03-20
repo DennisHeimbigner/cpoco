@@ -56,8 +56,8 @@ are set when opening a binary file on Windows. */
 #cmakedefine USE_MUTEX 1
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#cmakedefine HAVE_UNISTD_H @HAVE_UNISTD_H@
-#cmakedefine YY_NO_UNISTD_H @YY_NO_UNISTD_H@
+#cmakedefine HAVE_UNISTD_H 1
+#cmakedefine YY_NO_UNISTD_H 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine HAVE_DLFCN_H @HAVE_DLFCN_H@

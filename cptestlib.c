@@ -1,9 +1,10 @@
 #include "assert.h"
+
+#define DLL_EXPORT
+
 #include "cpoco.h"
 
-extern int gimmeFive();
-
-int gimmeFive()
+EXTERNL int gimmeFive()
 {
 	return 5;
 }

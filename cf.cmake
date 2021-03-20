@@ -32,9 +32,12 @@ cd build
 if test "x$VS" != x ; then
 # Visual Studio
 CFG="Release"
+
+FLAGS="$FLAGS -DPREFIXPATH=d:\\git\\cpoco\\build\\${CFG}"
+
 cmake -DCMAKE_BUILD_TYPE=${CFG} $FLAGS ..
 cmake --build . --config ${CFG}
-cmake --build . --config ${CFG} --target test
+cmake --build . --config ${CFG} --target RUN_TESTS
 else
 # GCC
 cmake "${G}" $FLAGS ..

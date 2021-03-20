@@ -5,8 +5,8 @@ cmds=$@
 fi
 
 FLAGS="--prefix=/usr/local"
-FLAGS="$FLAGS --disable-pthread"
-FLAGS="$FLAGS --disable-mutex"
+#FLAGS="$FLAGS --disable-pthread"
+#FLAGS="$FLAGS --disable-mutex"
 
 export CFLAGS="-Wall -Wno-unused-parameter -Wno-char-subscripts -Wno-pointer-sign ${CFLAGS}"
 

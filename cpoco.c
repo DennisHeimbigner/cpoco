@@ -5,18 +5,19 @@
 *********************************************************************/
 
 #include "config.h"
-#include "stdlib.h"
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 #ifdef HAVE_UNISTD_H
-#include "unistd.h"
+#include <unistd.h>
 #endif
 
+#define DLL_EXPORT
 #include "cpoco.h"
 
 /**************************************************/
 
 /* Creates a SharedLib object. */
-cperr
+EXTERNL cperr
 cpsharedlibnew(SharedLib** libp)
 {
     cperr ret = CP_OK;
@@ -35,7 +36,7 @@ done:
 }
 
 /* free this shared library */
-cperr
+EXTERNL cperr
 cpsharedlibfree(SharedLib* lib)
 {
     cperr ret = CP_OK;
@@ -49,21 +50,21 @@ cpsharedlibfree(SharedLib* lib)
 Loads a shared library from the given path using specified flags.
 Returns error if a library has already been loaded or cannot be loaded.
 */
-cperr
+EXTERNL cperr
 cpload(SharedLib* lib, const char* path, int flags)
 {
     if(lib == NULL || path == NULL) return CP_EINVAL;
     return lib->api.load(lib,path,flags);
 }
 
-cperr
+EXTERNL cperr
 cpunload(SharedLib* lib) /* Unloads a shared library. */
 {
     if(lib == NULL) return CP_EINVAL;
     return lib->api.unload(lib);
 }
 
-int
+EXTERNL int
 cpisloaded(SharedLib* lib) /* Returns 1 iff a library has been loaded. */
 {
     if(lib == NULL) return 0;
@@ -74,7 +75,7 @@ cpisloaded(SharedLib* lib) /* Returns 1 iff a library has been loaded. */
    For functions, this is the entry point of the function.
    Return error if the symbol does not exist
 */
-void*
+EXTERNL void*
 cpgetsymbol(SharedLib* lib,const char* name)
 {
     if(lib == NULL) return NULL;
@@ -84,14 +85,14 @@ cpgetsymbol(SharedLib* lib,const char* name)
 /* Returns the path of the library, as specified in
    a call to load()
 */
-const char*
+EXTERNL const char*
 cpgetpath(SharedLib* lib)
 {
     if(lib == NULL) return NULL;
     return lib->api.getpath(lib);
 }
 
-const char*
+EXTERNL const char*
 cperrstr(int err1)
 {
    /* System error? */
